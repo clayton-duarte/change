@@ -1,34 +1,70 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+import { Typography, Statistic, Divider, Button, Card, Row, Col } from 'antd'
 import { GetStaticProps, NextPage } from 'next'
-import {
-  Typography,
-  Statistic,
-  Divider,
-  Button,
-  Table,
-  Card,
-  Row,
-  Col,
-} from 'antd'
+import { useRouter } from 'next/router'
+import Image from 'next/image'
+
+import toonie from '../public/images/toonie.png'
+import loonie from '../public/images/loonie.png'
+import quarter from '../public/images/quarter.png'
+import dime from '../public/images/dime.png'
+import nickel from '../public/images/nickel.png'
+
+interface Coin {
+  name: string
+  value: number
+  src: StaticImageData
+}
+
+const coins: Coin[] = [
+  {
+    name: 'toonie',
+    src: toonie,
+    value: 2,
+  },
+  {
+    name: 'loonie',
+    src: loonie,
+    value: 1,
+  },
+  {
+    name: 'quarter',
+    src: quarter,
+    value: 0.25,
+  },
+  {
+    name: 'dime',
+    src: dime,
+    value: 0.1,
+  },
+  {
+    name: 'nickel',
+    src: nickel,
+    value: 0.05,
+  },
+]
+
+interface CoinCount extends Coin {
+  count: number
+}
 
 const getBestCoinCount = (
   change: number
 ): {
-  coinCount: { coin: number; count: number }[]
+  coinCount: CoinCount[]
   missingChange: number
   realChange: number
 } => {
-  const coinCount = [0.05, 0.1, 0.25, 1, 2]
-    .map((coin) => ({ coin, count: 0 }))
-    .sort((prev, curr) => curr.coin - prev.coin)
+  const coinCount = coins
+    .map((coin: Coin): CoinCount => ({ ...coin, count: 0 }))
+    .sort((prev, curr) => curr.value - prev.value)
 
   let missingChange = change
   let coinIndex = 0
   const limit = -0.03
 
   while (missingChange > limit && coinIndex < coinCount.length) {
-    const newChange = missingChange - coinCount[coinIndex].coin
+    const newChange = missingChange - coinCount[coinIndex].value
     if (newChange > limit) {
       coinCount[coinIndex].count = coinCount[coinIndex].count + 1
       missingChange = newChange
@@ -37,8 +73,8 @@ const getBestCoinCount = (
     }
   }
 
-  const realChange = coinCount.reduce((total, { coin, count }) => {
-    return total + count * coin
+  const realChange = coinCount.reduce((total, { value, count }) => {
+    return total + count * value
   }, 0)
 
   return {
@@ -85,36 +121,30 @@ const HomePage: NextPage<PageProps> = ({ bill, check }) => {
       <Paragraph>How much should be the change?</Paragraph>
       {viewSolution ? (
         <>
+          <Card>
+            <Row gutter={[8, 8]}>
+              {coinCount.map(({ count, name, src }) =>
+                [...Array(count)].map((_, index) => (
+                  <Col key={`${name}-${index}`} xs={5} sm={2} md={1}>
+                    <Image layout="responsive" alt={name} src={src} />
+                  </Col>
+                ))
+              )}
+            </Row>
+          </Card>
+          <br />
           <Row gutter={[24, 24]}>
-            <Col>
-              <Card>
-                <Table
-                  pagination={false}
-                  dataSource={coinCount}
-                  columns={[
-                    {
-                      title: 'Coin',
-                      dataIndex: 'coin',
-                      key: 'coin',
-                    },
-                    {
-                      title: 'Count',
-                      dataIndex: 'count',
-                      key: 'count',
-                    },
-                  ]}
-                />
-              </Card>
-            </Col>
-            <Col>
-              <Card>
-                <Statistic title="Exact" value={toCad(change)} />
-              </Card>
-              <br />
+            <Col xs={24} sm={8} md={4}>
               <Card>
                 <Statistic title="You Give" value={toCad(realChange)} />
               </Card>
-              <br />
+            </Col>
+            <Col xs={12} sm={8} md={4}>
+              <Card>
+                <Statistic title="Exact" value={toCad(change)} />
+              </Card>
+            </Col>
+            <Col xs={12} sm={8} md={4}>
               <Card>
                 <Statistic title="Difference" value={toCad(-missingChange)} />
               </Card>
