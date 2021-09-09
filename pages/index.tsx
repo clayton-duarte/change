@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { GetServerSideProps, NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import {
   Typography,
   Statistic,
@@ -56,7 +56,7 @@ interface PageProps {
   bill: number
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async () => {
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
   const bills = [20, 50, 100]
   const bill = bills[Math.floor(Math.random() * bills.length)]
   const check = bill - Math.random() * 10

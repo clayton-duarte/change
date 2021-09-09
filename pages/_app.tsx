@@ -31,7 +31,7 @@ const MyApp: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => {
           }
 
           main {
-            background: #ffffff;
+            background: #fafafa;
           }
 
           footer {
