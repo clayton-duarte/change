@@ -126,7 +126,12 @@ const HomePage: NextPage<PageProps> = ({ bill, check }) => {
               {coinCount.map(({ count, name, src }) =>
                 [...Array(count)].map((_, index) => (
                   <Col key={`${name}-${index}`} xs={5} sm={2} md={1}>
-                    <Image layout="responsive" alt={name} src={src} />
+                    <Image
+                      layout="responsive"
+                      placeholder="blur"
+                      alt={name}
+                      src={src}
+                    />
                   </Col>
                 ))
               )}
