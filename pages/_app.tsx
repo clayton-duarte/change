@@ -6,6 +6,7 @@ import { Layout } from 'antd'
 
 const MyApp: FunctionComponent<AppProps> = ({ Component: Page, pageProps }) => {
   const { Header, Content, Footer } = Layout
+
   return (
     <>
       <Layout>
