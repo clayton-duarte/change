@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typography, Statistic, Divider, Button, Card, Row, Col } from 'antd'
-import { GetStaticProps, NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 
@@ -61,7 +61,7 @@ const getBestCoinCount = (
 
   let missingChange = change
   let coinIndex = 0
-  const limit = -0.03
+  const limit = -0.02
 
   while (missingChange > limit && coinIndex < coinCount.length) {
     const newChange = missingChange - coinCount[coinIndex].value
@@ -92,7 +92,7 @@ interface PageProps {
   bill: number
 }
 
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async () => {
   const bills = [20, 50, 100]
   const bill = bills[Math.floor(Math.random() * bills.length)]
   const check = bill - Math.random() * 10
